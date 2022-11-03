@@ -1,16 +1,5 @@
-def parse(problem):
-    pieces = problem.split(" ")
-    addend, operation, additive = pieces[0], pieces[1], pieces[-1]
-    lengths = [len(addend), len(additive)]
-    max_length = max(lengths)
-    if operation == "+":
-        solution = int(addend )+ int(additive)
-    elif operation == "-":
-        solution = int(addend) - int(additive)
-    else:
-        raise TypeError("Error: Operator must be '+' or '-'.")
+import re
 
-    return addend, operation, additive, max_length, str(solution)
 
 def decorate(problems):
     addends = [x[0] for k,x in problems.items()]
@@ -29,23 +18,57 @@ def decorate(problems):
             difference = max_sizes[i] - len(additives[i])
             additives[i] = " " * difference + additives[i]
 
-        if len(solutions[i]) < max_sizes[i] + 2:
-            difference = (max_sizes[i] + 2) - len(solutions[i])
-            solutions[i] = " " * difference + solutions[i]
+        if len(str(solutions[i])) < max_sizes[i] + 2:
+            difference = (max_sizes[i] + 2) - len(str(solutions[i]))
+            solutions[i] = " " * difference + str(solutions[i])
 
     return addends, operations, additives, solutions
 
+
 def arithmetic_arranger(problems, show_solutions=False):
+
+    # Checking for more than 5 problems in the problem set
+    if len(problems) > 5:
+        return "Error: Too many problems."
+
     arranged_problems = list()
     hash_table = dict()
+
     for i in range(len(problems)):
-        addend, operation, additive, max_length, solution = parse(problems[i])
+        pieces = problems[i].split(" ")
+        addend, operation, additive = pieces[0], pieces[1], pieces[-1]
+        lengths = [len(addend), len(additive)]
+        max_length = max(lengths)
+
+        search_addend = re.findall("((?![0-9]).)", addend)
+        search_additive = re.findall("((?![0-9]).)", additive)
+
+        # Checking that operands only contain digits
+        if ((len(search_addend) == 1) and (len(search_addend[0]) != 0)):
+            return "Error: Numbers must only contain digits."
+
+        elif ((len(search_additive) == 1) and (len(search_additive[0]) != 0)):
+            return "Error: Numbers must only contain digits."
+
+        # Validating operation type and operand lengths
+        if operation == "+":
+            solution = int(addend) + int(additive)
+        elif operation == "-":
+            solution = int(addend) - int(additive)
+        else:
+            return "Error: Operator must be '+' or '-'."
+
+        if (int(addend) > 9999) or (int(additive) > 9999):
+            return "Error: Numbers cannot be more than four digits."
+
+
         hash_table[i] = (addend, operation, additive, max_length, solution)
     decorated = decorate(hash_table)
 
     addends = decorated[0]
     operations = decorated[1]
     additives = decorated[2]
+
     addend_string = "  " + ("      ").join(addends)
 
     # joining the operations
@@ -57,7 +80,7 @@ def arithmetic_arranger(problems, show_solutions=False):
             additives[i] = operations[j] + " " + additives[i]
         j += 1
 
-    #creating the underlines
+    # creating the underlines
     underlines = []
     for i in range(len(additives)):
         length = len(additives[i])
@@ -72,9 +95,8 @@ def arithmetic_arranger(problems, show_solutions=False):
     solutions = decorated[-1]
     solution_string = ("    ").join(solutions)
 
+    # Constructing the output format
     arranged_problems = addend_string + "\n" + additive_string + "\n" + underline_string
     if show_solutions:
         arranged_problems += "\n" + solution_string
     return arranged_problems
-
-print(arithmetic_arranger(["32 + 8", "1 - 3801", "9999 + 9999", "523 - 49"], True))
