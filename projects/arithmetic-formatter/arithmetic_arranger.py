@@ -1,7 +1,16 @@
 import re
 
 
-def decorate(problems):
+def decorate(problems : list) -> tuple:
+    """Right alignment and calculation of solutions
+
+    Args:
+        problems (list): a list of problems to decorate
+
+    Returns:
+        tuple: the different parts of the problem and the solutions
+    """
+
     addends = [x[0] for k,x in problems.items()]
     operations = [x[1] for k,x in problems.items()]
     additives = [x[2] for k,x in problems.items()]
@@ -25,7 +34,17 @@ def decorate(problems):
     return addends, operations, additives, solutions
 
 
-def arithmetic_arranger(problems, show_solutions=False):
+def arithmetic_arranger(problems : list, show_solutions = False) -> str:
+    """Arranges a list of addition and subtraction problems in the vertical format
+
+    Args:
+        problems (list): a list of addition and subtraction problems
+        show_solutions (bool, optional): If True, the solutions to the problems are shown.
+                                            Defaults to False.
+
+    Returns:
+        str: A string representation of the vertical format of the problems
+    """
 
     # Checking for more than 5 problems in the problem set
     if len(problems) > 5:
