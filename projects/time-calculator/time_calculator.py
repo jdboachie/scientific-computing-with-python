@@ -56,7 +56,6 @@ def construct_return_string(time, day = None):
     else:
         minutes = str(time["minutes"])
 
-    print(time["day"], time["days_later"])
     if time["day"] and not time["days_later"]:
         print("here")
         return str(time["hours"]) + ":" + minutes + " " + str(time["GMT"]) + ", " + time["day"]
