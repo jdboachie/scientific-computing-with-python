@@ -57,19 +57,16 @@ def construct_return_string(time, day = None):
         minutes = str(time["minutes"])
 
     if time["day"] and not time["days_later"]:
-        print("here")
         return str(time["hours"]) + ":" + minutes + " " + str(time["GMT"]) + ", " + time["day"]
     elif time["day"] and time["days_later"]:
-        print("there")
         return str(time["hours"]) + ":" + minutes + " " + str(time["GMT"]) + ", " + time["day"] + time["days_later"]
     else:
-        print("where")
         return str(time["hours"]) + ":" + minutes + " " + str(time["GMT"])
 
 
 def do_day(time, day):
     days_of_the_week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    time["day"] = days_of_the_week[days_of_the_week.index(day) + time["days"]]
+    time["day"] = days_of_the_week[(days_of_the_week.index(day) + time["days"]) % 7]
     return time
 
 
@@ -85,7 +82,7 @@ def add_time(start, duration, day = None):
 
     # Step 3
     added_time = add(start_time, duration)
-    added_time["day"] = None
+    added_time["day"] = day
 
     # Step 4
     added_time = to_12hr(added_time)
@@ -97,4 +94,5 @@ def add_time(start, duration, day = None):
     else:
         return construct_return_string(added_time)
 
-print(add_time("11:59 Pm", "24:05"))
+actual = add_time("3:30 PM", "2:12", "Monday")
+print(actual)
